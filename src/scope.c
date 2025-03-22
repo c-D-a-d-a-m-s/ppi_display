@@ -26,8 +26,8 @@
 
 /* essential data*/
 typedef struct {
-    struct SDL_Window *window;
-    struct SDL_Renderer *renderer;
+    SDL_Window *window;
+    SDL_Renderer *renderer;
     SDL_Event event;
     bool is_running;
 } App;
