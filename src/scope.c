@@ -89,9 +89,9 @@ void app_run(App *a) {
     a->is_running = true;
 
     while (a->is_running) {
-    app_event(a);
-    app_render(a);
-    SDL_Delay(16);
+        app_event(a);
+        app_render(a);
+        SDL_Delay(16);
     }
 }
 
