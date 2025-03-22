@@ -28,10 +28,13 @@
 typedef struct {
     struct SDL_Window *window;
     struct SDL_Renderer *renderer;
+    SDL_Event event;
+    bool is_running;
 } App;
 
 /* function prototyping*/
 bool app_init(App *a);
+void app_run(App *a);
 void app_free(App *a);
 
 /* functions*/
@@ -41,9 +44,37 @@ bool app_init(App *a) {
         fprintf(stderr, "*ERROR* Failed to create window: %s", SDL_GetError());
         return false;
     }
-    SDL_Delay(5000);
 
     return true;
+}
+
+void app_run(App *a) {
+    a->is_running = true;
+
+    while (a->is_running) {
+        while (SDL_PollEvent(&a->event)) {
+            switch (a->event.type)
+            {
+            case SDL_EVENT_QUIT:
+                a->is_running = false;
+                break;
+            
+            case SDL_EVENT_KEY_DOWN:
+                switch (a->event.key.scancode) {
+                case SDL_SCANCODE_ESCAPE:
+                    a->is_running = false;
+                    break;
+                default:
+                    break;
+                }
+                break;
+            
+            default:
+                break;
+            }
+        }
+
+    }
 }
 
 void app_free(App *a) {
@@ -59,6 +90,8 @@ int main(void) {
     App app = {0};
 
     if (app_init(&app)) {
+        app_run(&app);
+
         exit_status = EXIT_SUCCESS;
     }
     app_free(&app);
