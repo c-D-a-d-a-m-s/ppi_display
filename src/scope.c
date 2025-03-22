@@ -34,6 +34,7 @@ typedef struct {
 
 /* function prototyping*/
 bool app_init(App *a);
+void app_render(App *a);
 void app_run(App *a);
 void app_free(App *a);
 
@@ -45,7 +46,19 @@ bool app_init(App *a) {
         return false;
     }
 
+    a->renderer = SDL_CreateRenderer(a->window, NULL);
+    if (!a->renderer) {
+        fprintf(stderr, "*ERROR* Failed to create renderer: %s", SDL_GetError());
+        return false;
+    }
+
     return true;
+}
+
+void app_render(App *a) {
+    SDL_SetRenderDrawColor(a->renderer, 128, 0, 0, SDL_ALPHA_OPAQUE);
+    SDL_RenderClear(a->renderer);
+    SDL_RenderPresent(a->renderer);
 }
 
 void app_run(App *a) {
@@ -74,10 +87,17 @@ void app_run(App *a) {
             }
         }
 
+    app_render(a);
+    SDL_Delay(16);
     }
 }
 
 void app_free(App *a) {
+    if (a->renderer) {
+        SDL_DestroyRenderer(a->renderer);
+        a->renderer = NULL;
+    }
+
     if (a->window) {
         SDL_DestroyWindow(a->window);
         a->window = NULL;
