@@ -55,6 +55,30 @@ bool app_init(App *a) {
     return true;
 }
 
+void app_event(App *a) {
+    while (SDL_PollEvent(&a->event)) {
+        switch (a->event.type)
+        {
+        case SDL_EVENT_QUIT:
+            a->is_running = false;
+            break;
+        
+        case SDL_EVENT_KEY_DOWN:
+            switch (a->event.key.scancode) {
+            case SDL_SCANCODE_ESCAPE:
+                a->is_running = false;
+                break;
+            default:
+                break;
+            }
+            break;
+        
+        default:
+            break;
+        }
+    }
+}
+
 void app_render(App *a) {
     SDL_SetRenderDrawColor(a->renderer, 128, 0, 0, SDL_ALPHA_OPAQUE);
     SDL_RenderClear(a->renderer);
@@ -65,28 +89,7 @@ void app_run(App *a) {
     a->is_running = true;
 
     while (a->is_running) {
-        while (SDL_PollEvent(&a->event)) {
-            switch (a->event.type)
-            {
-            case SDL_EVENT_QUIT:
-                a->is_running = false;
-                break;
-            
-            case SDL_EVENT_KEY_DOWN:
-                switch (a->event.key.scancode) {
-                case SDL_SCANCODE_ESCAPE:
-                    a->is_running = false;
-                    break;
-                default:
-                    break;
-                }
-                break;
-            
-            default:
-                break;
-            }
-        }
-
+    app_event(a);
     app_render(a);
     SDL_Delay(16);
     }
