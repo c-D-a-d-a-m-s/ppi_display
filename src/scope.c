@@ -34,6 +34,7 @@ typedef struct {
 
 /* function prototyping */
 bool app_init(App *a);
+void app_event(App *a);
 void app_render(App *a);
 void app_run(App *a);
 void app_free(App *a);
